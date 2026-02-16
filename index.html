@@ -80,11 +80,15 @@
         /* Screenshot mode for before (scrollable image) */
         .screenshot-container {
             overflow-y: auto;
+            overflow-x: hidden;
             background: #fff;
+            height: 100%;
+            -webkit-overflow-scrolling: touch;
         }
         .screenshot-container img {
             width: 100%;
             display: block;
+            pointer-events: none;
         }
 
         .before-layer iframe, .before-layer .screenshot-container { background: #ffffff; }
@@ -354,8 +358,10 @@
         function startDrag(e) {
             isDragging = true;
             desktopIframes.forEach(iframe => iframe.style.pointerEvents = 'none');
-            // Also disable pointer events on screenshot containers
-            comparison.querySelectorAll('.screenshot-container').forEach(el => el.style.pointerEvents = 'none');
+            comparison.querySelectorAll('.screenshot-container').forEach(el => {
+                el.style.pointerEvents = 'none';
+                el.style.overflowY = 'hidden';
+            });
             document.body.style.userSelect = 'none';
             e.preventDefault();
         }
@@ -363,7 +369,10 @@
         function stopDrag() {
             isDragging = false;
             desktopIframes.forEach(iframe => iframe.style.pointerEvents = 'auto');
-            comparison.querySelectorAll('.screenshot-container').forEach(el => el.style.pointerEvents = 'auto');
+            comparison.querySelectorAll('.screenshot-container').forEach(el => {
+                el.style.pointerEvents = 'auto';
+                el.style.overflowY = 'auto';
+            });
             document.body.style.userSelect = '';
         }
 
