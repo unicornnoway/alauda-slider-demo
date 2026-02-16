@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Revamp | Before & After</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .logo img { height: 36px; width: auto; }
+
+        h1 { font-size: 1rem; font-weight: 500; color: #888; }
+
+        .cta-btn {
+            background: #C9DBD0;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 219, 208, 0.4);
+        }
+
+        /* ============ DESKTOP: Slider ============ */
+        .desktop-comparison {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            cursor: ew-resize;
+        }
+
+        .site-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        .site-layer iframe,
+        .site-layer .screenshot-container {
+            width: 100%; height: 100%;
+            border: none;
+        }
+
+        /* Screenshot mode for before (scrollable image) */
+        .screenshot-container {
+            overflow-y: auto;
+            background: #fff;
+        }
+        .screenshot-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .before-layer iframe, .before-layer .screenshot-container { background: #ffffff; }
+        .before-layer { z-index: 2; clip-path: inset(0 50% 0 0); }
+        .after-layer { z-index: 1; }
+
+        .slider-handle {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 4px; height: 100%;
+            background: #C9DBD0;
+            z-index: 50;
+            cursor: ew-resize;
+            transform: translateX(-50%);
+        }
+        .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px; height: 56px;
+            background: #C9DBD0;
+            border-radius: 50%;
+            box-shadow: 0 4px 24px rgba(201, 219, 208, 0.5);
+        }
+        .slider-handle::after {
+            content: '◄ ►';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0a0a0a;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .label {
+            position: fixed;
+            top: 80px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.9);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 60;
+            pointer-events: none;
+        }
+        .label-before { left: 20px; color: #ff6b6b; border: 2px solid #ff6b6b; }
+        .label-after { right: 20px; color: #C9DBD0; border: 2px solid #C9DBD0; }
+
+        .instructions {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, 60px);
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.9);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #fff;
+            z-index: 60;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            white-space: nowrap;
+        }
+
+        /* ============ MOBILE: Swipe Carousel ============ */
+        .mobile-carousel {
+            display: none;
+            position: fixed;
+            top: 60px; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            width: 200%; height: 100%;
+            transition: transform 0.3s ease;
+        }
+        .carousel-slide {
+            width: 50%; height: 100%;
+            position: relative;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-slide iframe,
+        .carousel-slide .screenshot-container { width: 100%; height: 100%; border: none; }
+
+        .carousel-label {
+            position: absolute;
+            top: 16px; left: 16px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+        .carousel-label.before { background: rgba(255, 107, 107, 0.9); color: white; }
+        .carousel-label.after { background: rgba(201, 219, 208, 0.9); color: #0a0a0a; }
+
+        .carousel-dots {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 12px;
+            z-index: 70;
+            background: rgba(0,0,0,0.8);
+            padding: 12px 20px;
+            border-radius: 50px;
+        }
+        .carousel-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #444;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .carousel-dot.active { background: #C9DBD0; transform: scale(1.2); }
+        .carousel-dot-label { font-size: 0.7rem; color: #888; text-align: center; margin-top: 4px; }
+
+        .swipe-hint {
+            position: fixed;
+            bottom: 90px; left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #666;
+            z-index: 70;
+            transition: opacity 0.5s ease;
+        }
+
+        /* ============ Responsive ============ */
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; position: fixed; z-index: 100; }
+            h1 { display: none; }
+            .cta-btn { padding: 8px 16px; font-size: 0.8rem; }
+            .desktop-comparison, .label, .slider-handle, .instructions { display: none !important; }
+            .mobile-carousel { display: block; }
+        }
+        @media (min-width: 769px) {
+            .mobile-carousel, .carousel-dots, .swipe-hint { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="https://ace.alauda.ai" class="logo"><img src="ace-mascot.png" alt="Ace">ace</a>
+        <h1>Website Revamp — Drag to Compare</h1>
+        <a href="https://ace.alauda.ai#contact" class="cta-btn">Get Your Revamp →</a>
+    </header>
+
+    <!-- DESKTOP: Slider comparison -->
+    <div class="desktop-comparison" id="comparison">
+        <span class="label label-before">✗ BEFORE</span>
+        <span class="label label-after">✓ AFTER</span>
+
+        <div class="site-layer before-layer" id="beforeLayer">
+            <!-- Filled by JS: iframe or screenshot -->
+        </div>
+
+        <div class="site-layer after-layer" id="afterLayer">
+            <!-- Filled by JS -->
+        </div>
+
+        <div class="slider-handle" id="sliderHandle"></div>
+        <div class="instructions" id="instructions">← Drag to compare →</div>
+    </div>
+
+    <!-- MOBILE: Swipe carousel -->
+    <div class="mobile-carousel" id="carousel">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide" id="mobileBeforeSlide">
+                <span class="carousel-label before">✗ BEFORE</span>
+            </div>
+            <div class="carousel-slide" id="mobileAfterSlide">
+                <span class="carousel-label after">✓ AFTER</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots">
+        <div>
+            <div class="carousel-dot active" data-index="0"></div>
+            <div class="carousel-dot-label">Before</div>
+        </div>
+        <div>
+            <div class="carousel-dot" data-index="1"></div>
+            <div class="carousel-dot-label">After</div>
+        </div>
+    </div>
+
+    <div class="swipe-hint" id="swipeHint">Select to compare</div>
+
+    <script>
+        // ============ URL Params ============
+        const params = new URLSearchParams(window.location.search);
+        
+        // ?before_img=URL  → screenshot image for before
+        // ?before=URL      → iframe URL for before (may be blocked by X-Frame-Options)
+        // ?after=URL       → iframe URL for after
+        // Falls back to defaults if no params
+        
+        const beforeImg = params.get('before_img');
+        const beforeUrl = params.get('before') || (beforeImg ? null : 'before.html');
+        const afterUrl = params.get('after') || 'https://leyvalex-kr-legal-ai-v2.vercel.app/';
+
+        function createBeforeContent() {
+            if (beforeImg) {
+                // Screenshot mode — scrollable image
+                const div = document.createElement('div');
+                div.className = 'screenshot-container';
+                const img = document.createElement('img');
+                img.src = beforeImg;
+                img.alt = 'Before';
+                div.appendChild(img);
+                return div;
+            } else {
+                const iframe = document.createElement('iframe');
+                iframe.src = beforeUrl;
+                iframe.loading = 'eager';
+                return iframe;
+            }
+        }
+
+        function createAfterContent() {
+            const iframe = document.createElement('iframe');
+            iframe.src = afterUrl;
+            iframe.loading = 'eager';
+            return iframe;
+        }
+
+        // Fill desktop
+        document.getElementById('beforeLayer').appendChild(createBeforeContent());
+        document.getElementById('afterLayer').appendChild(createAfterContent());
+
+        // Fill mobile
+        document.getElementById('mobileBeforeSlide').appendChild(createBeforeContent());
+        document.getElementById('mobileAfterSlide').appendChild(createAfterContent());
+
+        // ============ DESKTOP: Slider Logic ============
+        const comparison = document.getElementById('comparison');
+        const beforeLayer = document.getElementById('beforeLayer');
+        const sliderHandle = document.getElementById('sliderHandle');
+        const instructions = document.getElementById('instructions');
+        const desktopIframes = comparison.querySelectorAll('iframe');
+        
+        let isDragging = false;
+        let hasInteracted = false;
+
+        function updateSlider(x) {
+            const rect = comparison.getBoundingClientRect();
+            let position = (x - rect.left) / rect.width * 100;
+            position = Math.max(2, Math.min(98, position));
+            
+            beforeLayer.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
+            sliderHandle.style.left = position + '%';
+            
+            if (!hasInteracted) {
+                hasInteracted = true;
+                instructions.style.opacity = '0';
+            }
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            desktopIframes.forEach(iframe => iframe.style.pointerEvents = 'none');
+            // Also disable pointer events on screenshot containers
+            comparison.querySelectorAll('.screenshot-container').forEach(el => el.style.pointerEvents = 'none');
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            desktopIframes.forEach(iframe => iframe.style.pointerEvents = 'auto');
+            comparison.querySelectorAll('.screenshot-container').forEach(el => el.style.pointerEvents = 'auto');
+            document.body.style.userSelect = '';
+        }
+
+        sliderHandle.addEventListener('mousedown', startDrag);
+        comparison.addEventListener('mousedown', (e) => {
+            startDrag(e);
+            updateSlider(e.clientX);
+        });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                requestAnimationFrame(() => updateSlider(e.clientX));
+            }
+        });
+
+        // Touch support for desktop slider
+        sliderHandle.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            desktopIframes.forEach(iframe => iframe.style.pointerEvents = 'none');
+            comparison.querySelectorAll('.screenshot-container').forEach(el => el.style.pointerEvents = 'none');
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchend', stopDrag);
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                requestAnimationFrame(() => updateSlider(e.touches[0].clientX));
+            }
+        }, { passive: true });
+
+        // ============ MOBILE: Carousel Logic ============
+        const carouselTrack = document.getElementById('carouselTrack');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const swipeHint = document.getElementById('swipeHint');
+        
+        let currentSlide = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let swipeHintShown = true;
+
+        function goToSlide(index) {
+            currentSlide = index;
+            carouselTrack.style.transform = `translateX(-${index * 50}%)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+            if (swipeHintShown) {
+                swipeHint.style.opacity = '0';
+                swipeHintShown = false;
+            }
+        }
+
+        if (carouselTrack) {
+            carouselTrack.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+            carouselTrack.addEventListener('touchmove', (e) => { touchEndX = e.touches[0].clientX; }, { passive: true });
+            carouselTrack.addEventListener('touchend', () => {
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0 && currentSlide < 1) goToSlide(1);
+                    else if (diff < 0 && currentSlide > 0) goToSlide(0);
+                }
+            });
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)));
+        });
+    </script>
+</body>
+</html>
