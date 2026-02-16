@@ -295,7 +295,7 @@
         // Falls back to defaults if no params
         
         const beforeImg = params.get('before_img');
-        const beforeUrl = params.get('before') || (beforeImg ? null : 'before.html');
+        const beforeUrl = params.get('before') || (beforeImg ? null : null);
         const afterUrl = params.get('after') || 'https://leyvalex-kr-legal-ai-v2.vercel.app/';
 
         function createBeforeContent() {
