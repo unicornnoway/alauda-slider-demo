@@ -288,14 +288,16 @@
     <script>
         // ============ URL Params ============
         const params = new URLSearchParams(window.location.search);
+        const PROXY = 'https://iframe-proxy-vercel-seven.vercel.app/api/proxy?url=';
         
-        // ?before_img=URL  → screenshot image for before
-        // ?before=URL      → iframe URL for before (may be blocked by X-Frame-Options)
-        // ?after=URL       → iframe URL for after
-        // Falls back to defaults if no params
+        // ?proxy_before=URL → iframe via proxy (strips X-Frame-Options)
+        // ?before_img=URL   → screenshot image for before
+        // ?before=URL       → direct iframe URL for before
+        // ?after=URL        → iframe URL for after
         
+        const proxyBefore = params.get('proxy_before');
         const beforeImg = params.get('before_img');
-        const beforeUrl = params.get('before') || (beforeImg ? null : null);
+        const beforeUrl = proxyBefore ? PROXY + encodeURIComponent(proxyBefore) : (params.get('before') || (beforeImg ? null : null));
         const afterUrl = params.get('after') || 'https://leyvalex-kr-legal-ai-v2.vercel.app/';
 
         function createBeforeContent() {
